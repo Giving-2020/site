@@ -1,0 +1,93 @@
+{% extends "blog/base.html" %}
+
+{% block head %}
+
+{% load static %}
+<link rel="stylesheet" href="{% static 'blog/article.css' %}">
+
+{% endblock %}
+
+
+{% load crispy_forms_tags %}
+{% load markdownify %}
+
+{% block title %} - {{ blog_post.title }} {% endblock %}
+
+{% block body %}
+
+<h2>{{ blog_post.title }}</h2>
+
+<form action="{% url 'downvote_post' blog_post.id %}?next={{ request.path }}" method="POST">
+    {% csrf_token %}
+    <small class="vote-count">{{ blog_post.downvote_set.all|length }}</small>
+    <a href="#" onclick="this.parentNode.submit()">
+        <img src="{% static 'blog/downvote.png' %}" alt="Downvote" class="vote {% if blog_post.downvoted %}lighten{% endif %}">
+    </a>
+</form>
+
+<form action="{% url 'upvote_post' blog_post.id %}?next={{ request.path }}" method="POST">
+    {% csrf_token %}
+    <small class="vote-count">{{ blog_post.upvote_set.all|length }}</small>
+    <a href="#" onclick="this.parentNode.submit()">
+        <img src="{% static 'blog/upvote.png' %}" alt="Upvote" class="vote {% if blog_post.upvoted %}lighten{% endif %}">
+    </a>
+</form>
+
+<br>
+
+<article class="media">
+    <a href="{% url 'profile' blog_post.user.id %}">
+        <img class="rounded-circle article-img" src="{{ blog_post.user.profile.profile_picture.url }}">
+    </a>
+    <div class="media-body">
+        <div class="article-metadata">
+            <a class="mr-2" href="{% url 'profile' blog_post.user.id %}">{{ blog_post.user }}</a>
+
+            <small class="text-muted mr-2">{{ blog_post.created_at|date:"F d, Y" }}</small>
+            <i><small class="text-muted mr-2">Last edited: {{ blog_post.last_edited|date:"F d, Y" }}</small></i>
+
+            {% if request.user == blog_post.user %}
+                <a href="{% url 'update_post' blog_post.id %}">
+                    <button class="btn btn-outline-info btn-sm">Edit Article</button>
+                </a>
+            {% endif %}
+        </div>  
+    <p class="article-content">{{ blog_post.content | markdown | safe }}</p>
+    </div>
+</article>
+
+<hr>
+
+<h2>Comments</h2>
+<form action="{% url 'comment_post' blog_post.id %}" method="POST">
+    {% csrf_token %}
+
+    {{ comment_form|crispy }}
+
+    <button class="btn btn-primary" style="float: right;">Post Comment</button>
+</form>
+
+<hr>
+
+{% for comment in comments %}
+
+<div class="media">
+    <a href="{% url 'profile' comment.user.id %}">
+        <img class="rounded-circle article-img" src="{{ comment.user.profile.profile_picture.url }}">
+    </a>
+    <div class="media-body">
+        <div class="article-metadata" style="border-bottom: 0px;">
+            <a class="mr-2" href="{% url 'profile' comment.user.id %}">{{ comment.user }}</a>
+
+            <small class="text-muted">{{ comment.created_at|date:"F d, Y" }}</small>
+            <i><small class="text-muted mr-2">Last edited: {{ comment.last_edited|date:"F d, Y" }}</small></i>
+        </div>
+        {{ comment.content }}
+    </div>
+</div>
+
+<hr>
+
+{% endfor %}
+
+{% endblock %}

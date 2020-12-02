@@ -1,0 +1,37 @@
+@import url('https://fonts.googleapis.com/css?family=Lato:400,700&display=swap');
+
+body {
+    overflow-x: hidden;
+    font-family: 'Lato', sans-serif;
+    color: #505962;
+}
+
+.navbar {
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: .9rem;
+  letter-spacing: .1rem;
+  background-color: rgba(0, 0, 0, 0.8)!important;
+}
+
+.navbar-brand {
+  height: 2.5rem;
+}
+
+.navbar-nav li {
+  padding-right: .7rem;
+  transition: all 0.5s ease 0s;
+}
+
+.navbar-nav li a {
+  transition: all 0.3s ease 0s;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+  color: white;
+  padding-top: .4rem;
+}
+
+.navbar-dark .navbar-nav .nav-link:hover {
+  color: rgb(224, 64, 64)!important;
+}

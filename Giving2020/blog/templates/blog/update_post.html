@@ -1,0 +1,26 @@
+{% extends "blog/base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block title %} - Update Post {% endblock %}
+
+{% block body %}
+
+<h2>Update Post</h2>
+
+<hr>
+
+<form method="POST">
+    {% csrf_token %}
+
+    {{ form|crispy }}
+
+    <hr>
+
+    <button class="btn btn-primary">Update Post</button>
+    <a href="{% url 'delete_post' blog_post.id %}" class="btn btn-danger">Delete Post</a>
+</form>
+
+{{ form.media }}
+
+{% endblock %}

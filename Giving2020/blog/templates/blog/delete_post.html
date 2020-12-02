@@ -1,0 +1,18 @@
+{% extends "blog/base.html" %}
+
+{% block title %} - Delete Post {% endblock %}
+
+{% block body %}
+
+<h2>Are you sure you want to delete the post <i>"{{ blog_post.title }}"</i></h2>
+
+<hr>
+
+<form method="POST">
+    {% csrf_token %}
+
+    <button class="btn btn-danger">Delete Post</button>
+    <a href="{% url 'blog_post' blog_post.id %}" class="btn btn-warning">Cancel</a>
+</form>
+
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "blog/base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block title %} - New Post {% endblock %}
+
+{% block body %}
+
+<h2>New Post</h2>
+
+<hr>
+
+<form method="POST">
+    {% csrf_token %}
+
+    {{ form|crispy }}
+
+    <hr>
+
+    <button class="btn btn-primary">Create Post</button>
+</form>        
+
+{{ form.media }}
+
+{% endblock %}
