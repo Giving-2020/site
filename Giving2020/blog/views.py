@@ -194,3 +194,16 @@ class DownVoteView(LoginRequiredMixin, View):
                 upvote.delete()
 
         return redirect(request.META.get('HTTP_REFERER', '/'))
+
+
+class CategoryView(View):
+    template_name = 'blog/category_posts.html'
+
+    def get(self, request, cats):
+        posts = BlogPost.objects.filter(category=cats)
+        posts = prepare_posts(request, *posts)
+
+        paginator = Paginator(posts, 2)
+        page_obj = paginator.get_page(request.GET.get('page'))
+
+        return render(request, self.template_name, {'is_paginated': True, 'page_obj': page_obj, 'cats':cats})
