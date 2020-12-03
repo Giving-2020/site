@@ -9,6 +9,7 @@
 
     <link rel="stylesheet" href="{% static 'blog/base.css' %}">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
     {% block head %}
     {% endblock %}
@@ -34,11 +35,20 @@
                 {% else %}
                     {% if "Blog Writers" in user.groups.all or user.is_staff %}
                         <li class="nav-item">
-                            <a href="{% url 'create_post' %}" class="nav-link">New Post</a>
+                            <a href="{% url 'create_post' %}" class="nav-link btn btn-outline-info">New Post</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'announcement' %}" class="nav-link btn btn-outline-info">New Announcement</a>
                         </li>
                     {% endif %}
+                    {% if user.is_superuser %}
+                        <li class="nav-item">
+                            <a href='{% url "superuserview" %}' class="nav-link btn btn-outline-info">View Users</a>
+                        </li>
+
+                    {% endif %}
                     <li class="nav-item">
-                        <a href="{% url 'profile' %}" class="nav-link">Profile</a>
+                        <a href="{% url 'profile' %}" class="nav-link" style="font-weight: lighter;">Logged in as <strong>{{ user.username }}</strong></a>
                     </li>
                     <li class="nav-item">
                         <a href="{% url 'logout' %}" class="nav-link">Logout</a>
@@ -70,18 +80,21 @@
                 {% endblock %}
             </div>
             <div class="col-md-4">
-                <div class="content-section">
-                    <h3>Giving2020 Blogs</h3>
+                <div class="content-section" style="padding: 15px 30px 30px 30px; border-radius: 25px;">
+                    <h3 style="padding-bottom: 15px;">Giving2020 Blogs</h3>
 
 
-                    <ul class="list-group">
+                    <ul class="list-group" style="border-radius: 25px;">
                         <li class="list-group-item list-group-item-light">
-                            <a href="{% url 'index' %}">Latest Posts</a>
+                            <a href="{% url 'index' %}"><i class="fa fa-clock-o"></i> Latest Posts {% if not pt == 0 %}<span class="badge badge-success">{{ pt }} Today</span>{% endif %}</a>
                         </li>
                         <li class="list-group-item list-group-item-light">
-                            <a href="{% url 'hot_posts' %}">Hot Posts</a>
+                            <a href="{% url 'hot_posts' %}"><i class="fa fa-fire"></i> Hot Posts</a>
                         </li>
-                        <li class="list-group-item list-group-item-light">Announcements</li>
+                        <li class="list-group-item list-group-item-light">
+                        <a href='{% url "announcements" %}'><i class="fa fa-bullhorn"></i> Announcements {% if not at == 0 %}<span class="badge badge-success">{{ at }} Today</span>{% endif %}</a>
+
+                    </li>
                     </ul>
                 </div>
             </div>

@@ -1,0 +1,16 @@
+{% extends 'blog/base_sidebar.html' %}
+
+{% block body %}
+<div class="card" style="padding: 30px;border-radius: 25px;">
+	<h1 style="font-weight: lighter;">{{ a.title }}
+	
+	</h1><hr>
+	<span class="text-muted">on {{ a.date }} by {{ a.author }}</span>
+	<br>
+	<p>
+		{{ a.content }}
+	</p>
+
+</div><br>
+
+{% endblock %}

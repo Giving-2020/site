@@ -1,20 +1,13 @@
 from django import forms
-from blog.models import BlogPost, Comment, Category
 
-choice = Category.objects.all().values_list('name', 'name')
-choice_list = []
-for item in choice:
-    choice_list.append(item)
+from blog.models import BlogPost, Comment, Announcement
 
 
 class BlogPostForm(forms.ModelForm):
+
     class Meta:
         model = BlogPost
-        fields = ['title', 'category', 'content']
-
-        widgets = {
-            'category': forms.Select(choices=choice_list, attrs={'class': 'form-control'})
-        }
+        fields = ['title', 'content']
 
 
 class CommentForm(forms.ModelForm):
@@ -28,3 +21,13 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['content']
+
+class AnnouncementForm(forms.ModelForm):
+    class Meta:
+        model = Announcement
+        fields = ('title', 'content', 'author')
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Title...'}),
+            'content': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Content'}),
+            'author': forms.TextInput(attrs={'id': 'auth', 'type': 'hidden'})
+        }

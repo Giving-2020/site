@@ -1,5 +1,6 @@
 from django.urls import path
-
+import random
+import secrets
 from blog.views import (
     BlogPostView,
     CommentView,
@@ -10,9 +11,15 @@ from blog.views import (
     IndexView,
     UpdatePostView,
     UpvoteView,
-    CategoryView
+    AnnouncementView,
+    SingleAnnouncementView,
+    AllAnnouncementsView,
+    SuperUserView,
+    delete_user
 )
 
+
+key = secrets.token_hex(78)
 
 urlpatterns = [
     path('', IndexView.as_view(), name='index'),
@@ -24,5 +31,9 @@ urlpatterns = [
     path('post/<int:post_id>/upvote/', UpvoteView.as_view(), name='upvote_post'),
     path('post/<int:post_id>/downvote/', DownVoteView.as_view(), name='downvote_post'),
     path('post/<int:post_id>/comment/', CommentView.as_view(), name='comment_post'),
-    path('category/<str:cats>/', CategoryView.as_view(), name='category_posts'),
+    path('announcement/', AnnouncementView.as_view(), name='announcement'),
+    path('announcements/<int:pk>', SingleAnnouncementView.as_view(), name='announcements_single'),
+    path('announcements/', AllAnnouncementsView.as_view(), name='announcements'),
+    path(f'superuser/{key}', SuperUserView.as_view(), name='superuserview'),
+    path(f'user/delete/{key}/<int:pk>', delete_user, name='delete_user')
 ]
