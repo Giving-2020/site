@@ -42,7 +42,7 @@
     <div class="media-body">
         <div class="article-metadata">
             <a class="mr-2" href="{% url 'profile' blog_post.user.id %}">{{ blog_post.user }}</a>
-
+            <small class="text-muted" href="{% url 'category_posts' blog_post.category %}">{{ blog_post.category }}</small>
             <small class="text-muted mr-2">{{ blog_post.created_at|date:"F d, Y" }}</small>
             <i><small class="text-muted mr-2">Last edited: {{ blog_post.last_edited|date:"F d, Y" }}</small></i>
 
