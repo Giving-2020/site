@@ -31,4 +31,4 @@ In this project, we have thought about the various ways in which donation affect
 
 
 ## How can you contribute?
-To contribute you can mail us at [mail2giving2020@gmail.com](mail2giving2020@gmail.com) and make sure you have read the [CONTRIBUTING GUIDE](https://github.com/giving2020/giving2020website-new/blob/main/CONTRIBUTING.md).
+To contribute you can mail us at [mail2giving2020@gmail.com](mail2giving2020@gmail.com) and make sure you have read the [CONTRIBUTING GUIDE](https://github.com/Giving-2020/site/blob/master/CONTRIBUTING.md).
