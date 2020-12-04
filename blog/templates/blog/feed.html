@@ -1,0 +1,69 @@
+{% block head %}
+
+{% load static %}
+<link rel="stylesheet" href="{% static 'blog/article.css' %}">
+
+{% endblock %}
+
+{% load markdownify %}
+
+{% for post in page_obj %}
+    <article class="media content-section">
+        <a href="{% url 'profile' post.user.id %}">
+            <img class="rounded-circle article-img" src="{{ post.user.profile.profile_picture.url }}">
+        </a>
+        <div class="media-body">
+            <div class="article-metadata">
+                <a class="mr-2" href="{% url 'profile' post.user.id %}">{{ post.user }}</a>
+                <small class="text-muted">{{ post.date|date:"F d, Y" }}</small>
+            </div>
+
+            <form action="{% url 'downvote_post' post.id %}?next={{ request.path }}" method="POST">
+                {% csrf_token %}
+                <small class="vote-count">{{ post.downvote_set.all|length }}</small>
+                <a href="#" onclick="this.parentNode.submit()">
+                    <img src="{% static 'blog/downvote.png' %}" alt="Downvote" class="vote {% if post.downvoted %}lighten{% endif %}">
+                </a>
+            </form>
+
+            <form action="{% url 'upvote_post' post.id %}?next={{ request.path }}" method="POST">
+                {% csrf_token %}
+                <small class="vote-count">{{ post.upvote_set.all|length }}</small>
+                <a href="#" onclick="this.parentNode.submit()">
+                    <img src="{% static 'blog/upvote.png' %}" alt="Upvote" class="vote {% if post.upvoted %}lighten{% endif %}">
+                </a>
+            </form>
+
+        <h2><a class="article-title" href="{% url 'blog_post' post.id %}">{{ post.title }}</a></h2>
+        <div class="blogcontent">
+        {{ post.content |slice:":150" | safe }} <a href='{% url "blog_post" post.id %}'>Read More...</a>
+        </div>
+        </div>
+    </article>
+{% endfor %}
+{% if page_obj %}
+{% if is_paginated %}
+
+    {% if page_obj.has_previous %}
+        <a href="?page=1" class="btn btn-outline-info mb-4">First</a>
+        <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-outline-info mb-4">Previous</a>
+    {% endif %}
+
+    {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+            <a href="?page={{ num }}" class="btn btn-info btn-sm mb-4">{{ num }}</a>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <a href="?page={{ num }}" class="btn btn-outline-info btn-sm mb-4">{{ num }}</a>
+        {% endif %}
+    {% endfor %}
+    
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="btn btn-outline-info mb-4">Next</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}" class="btn btn-outline-info mb-4">Last</a>
+    {% endif %}
+
+
+{% endif %}
+{% else %}
+
+{% endif %}
