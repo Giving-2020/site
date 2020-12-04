@@ -19,7 +19,13 @@
     <img class="rounded-circle account-img" src="{{ user_query.profile.profile_picture.url }}">
     <div class="media-body">
         <h2>{{ user_query.username }}</h2>
+        {% if user_query == user %}
+            <a href="{% url 'update_profile' %}" class="btn btn-primary btn-sm">
+                Edit Profile
+            </a>
+            <br><br>
 
+        {% endif %}
         {% if user_query.first_name or user_query.last_name %}
             <p class="text-secondary">
                 <strong>Name:</strong> {{ user_query.first_name }} {{ user_query.last_name }}
@@ -41,18 +47,7 @@
     <p>{{ user_query.profile.description }}</p>
 {% endif %}
 
-{% if user_query == user %}
-
-    <hr>
-
-    <a href="{% url 'update_profile' %}">
-        <button class="btn btn-primary btn-sm">Edit Profile</button>
-    </a>
-
-{% endif %}
-
-<hr>
-
+<h1 style="font-weight: lighter;">Posts by <strong>{{ user_query.username }}</strong></h1>
 {% include 'blog/feed.html' %}
 
 

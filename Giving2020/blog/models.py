@@ -1,25 +1,24 @@
 from django.db import models
 from markdownx.models import MarkdownxField
-
-
+from ckeditor.fields import RichTextField
 class Category(models.Model):
     name = models.CharField(max_length=64)
 
     def __str__(self):
         return self.name
 
-
 class BlogPost(models.Model):
     title = models.CharField(max_length=64)
-    content = MarkdownxField(max_length=16384)
-    #category = models.ManyToManyField(max_length=64, related_name="Category", default="Uncategorized")
+    content = RichTextField(max_length=16384)
     category = models.CharField(max_length=64, default="Uncategorized")
 
-    created_at = models.DateTimeField(auto_now_add=True)
+    date = models.DateTimeField(auto_now_add=True)
     last_edited = models.DateTimeField(auto_now=True)
 
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.title
 
 class Upvote(models.Model):
     blog_post = models.ForeignKey('BlogPost', on_delete=models.CASCADE)
@@ -40,4 +39,13 @@ class Comment(models.Model):
     last_edited = models.DateTimeField(auto_now=True)
 
     blog_post = models.ForeignKey('BlogPost', on_delete=models.CASCADE)
-    user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    user = models.ForeignKey('auth.User',related_name='comments', on_delete=models.CASCADE)
+
+class Announcement(models.Model):
+    title = models.CharField(max_length=1024)
+    content = RichTextField()
+    date = models.DateTimeField(auto_now_add=True)
+    author = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.title

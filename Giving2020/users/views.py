@@ -20,7 +20,7 @@ class ProfileView(View):
 
         user = get_object_or_404(User, id=user_id)
 
-        posts = BlogPost.objects.filter(user=user).order_by('-created_at')
+        posts = BlogPost.objects.filter(user=user).order_by('-date')
         posts = prepare_posts(request, *posts)
 
         paginator = Paginator(posts, 2)

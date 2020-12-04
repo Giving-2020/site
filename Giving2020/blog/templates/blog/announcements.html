@@ -1,0 +1,19 @@
+{% extends 'blog/base_sidebar.html' %}
+
+{% block body %}
+{% if a %}
+{% for n in a %}
+
+<div class="card" style="padding: 15px; border-radius: 25px;">
+	<h1><a href='{% url "announcements_single" n.pk %}'><i class="fa fa-bullhorn"></i> {{ n.title }}</a></h1><span class="text-muted">on {{ n.date }} by <a href="{% url 'profile' n.author.id %}">{{ n.author }}</a></span>
+	<hr>
+	<p>
+		{{ n.content }}
+	</p>
+
+</div><br>
+{% endfor %}
+{% else %}
+<h1 style="font-weight: lighter;">No Announcements Yet...</h1>
+{% endif %}
+{% endblock %}

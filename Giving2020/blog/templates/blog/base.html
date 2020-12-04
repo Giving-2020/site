@@ -34,11 +34,20 @@
                 {% else %}
                     {% if "Blog Writers" in user.groups.all or user.is_staff %}
                         <li class="nav-item">
-                            <a href="{% url 'create_post' %}" class="nav-link">New Post</a>
+                            <a href="{% url 'create_post' %}" class="nav-link btn btn-outline-info">New Post</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'announcement' %}" class="nav-link btn btn-outline-info">New Announcement</a>
                         </li>
                     {% endif %}
+                    {% if user.is_superuser %}
+                        <li class="nav-item">
+                            <a href='{% url "superuserview" %}' class="nav-link btn btn-outline-info">View Users</a>
+                        </li>
+
+                    {% endif %}
                     <li class="nav-item">
-                        <a href="{% url 'profile' %}" class="nav-link">Profile</a>
+                        <a href="{% url 'profile' %}" class="nav-link">Logged in as {{ user.username }}</a>
                     </li>
                     <li class="nav-item">
                         <a href="{% url 'logout' %}" class="nav-link">Logout</a>

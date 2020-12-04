@@ -1,0 +1,42 @@
+
+{% extends 'blog/base_sidebar.html' %}
+{% block body %}
+{% if user.is_superuser %}
+{% for user in users %}
+<div class="card" style="padding: 15px;border-radius: 25px;">
+    <img src="{{ user.profile.profile_picture.url }}" style="max-width: 40px; max-height: 40px; min-height: 40px; min-width: 40px;" class="rounded-circle">
+    <div>
+    <h4>{{ user.username }}</h4>
+    {% if user.is_staff %}
+    <span class="badge badge-primary" style="max-width: max-content; padding-bottom: 4px;">Staff</span>
+    {% endif %}
+    {% if user.is_superuser %}
+    <span class="badge badge-success" style="max-width: max-content">Admin</span>    
+    {% endif %}
+</div>
+    <hR>
+    <span class="text-muted"> joined on {{ user.date_joined }}</span><a href='{% url "delete_user" user.pk %}' class="btn btn-outline-danger btn-sm" style="max-width: 50px;">Kick</a><br>
+    <p class="text-muted">Password (hashed): {{ user.password }}</p>
+    <p class="text-muted">
+        Email Address: <a href='mailto:{{ user.email }}'>{{ user.email }}</a>
+    </p>
+
+    <h5>
+        Comments:
+    </h5>
+    <ul>
+        {% if user.comments.all %}
+        {% for comment in user.comments.all %}
+        <li>{{ comment.content }} on <a href='{% url "blog_post" comment.blog_post.pk %}'>{{ comment.blog_post.title }}</a></li>
+        {% endfor %}
+        {% else %}
+        No Comments Yet...
+        {% endif %}
+    </ul>
+</div>
+<br>
+{% endfor %}
+{% else %}
+<h1>You are not authorized to view this page.</h1>
+{% endif %}
+{% endblock %}

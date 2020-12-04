@@ -1,7 +1,10 @@
 .article-title {
     color: #444444;
 }
-
+.blogcontent {
+    text-transform: unset;!important
+    font-weight: lighter;!important 
+}
 a.article-title:hover {
     color: #428bca;
     text-decoration: none;

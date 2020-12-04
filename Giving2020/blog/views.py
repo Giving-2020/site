@@ -7,23 +7,32 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
-
-from blog.forms import BlogPostForm, CommentForm
-from blog.models import BlogPost, DownVote, Upvote
+from django.contrib.auth.models import User
+import datetime
+from blog.forms import BlogPostForm, CommentForm, AnnouncementForm
+from blog.models import BlogPost, DownVote, Upvote, Announcement
 from blog.utils import prepare_posts
+
+def get_latest(obj):
+    posted_today = 0
+    for a in obj:
+        if a.date.date() == datetime.datetime.now().date():
+            posted_today += 1
+    return posted_today
 
 
 class IndexView(View):
     template_name = 'blog/index.html'
 
     def get(self, request):
-        posts = BlogPost.objects.order_by('-created_at')
+        posts = BlogPost.objects.order_by('-date')
         posts = prepare_posts(request, *posts)
-
+        pt = get_latest(posts)
+        at = get_latest(Announcement.objects.all().order_by('-date'))
         paginator = Paginator(posts, 2)
         page_obj = paginator.get_page(request.GET.get('page'))
 
-        return render(request, self.template_name, {'is_paginated': True, 'page_obj': page_obj})
+        return render(request, self.template_name, {'is_paginated': True, 'page_obj': page_obj, 'pt': pt, 'at': at})
 
 
 class HotPostsView(View):
@@ -35,8 +44,9 @@ class HotPostsView(View):
 
         paginator = Paginator(posts, 2)
         page_obj = paginator.get_page(request.GET.get('page'))
-
-        return render(request, self.template_name, {'is_paginated': True, 'page_obj': page_obj})
+        pt = get_latest(BlogPost.objects.all().order_by('-date'))
+        at = get_latest(Announcement.objects.all().order_by('-date'))
+        return render(request, self.template_name, {'is_paginated': True, 'page_obj': page_obj, 'pt': pt, 'at': at})
 
 
 user_member_required = user_passes_test(
@@ -63,7 +73,7 @@ class CreatePostView(LoginRequiredMixin, View):
         post = form.save(commit=False)
         post.user = request.user
         post.save()
-
+        messages.success(request, 'Posted successfully')
         return redirect('blog_post', post_id=post.id)
 
 
@@ -195,6 +205,53 @@ class DownVoteView(LoginRequiredMixin, View):
 
         return redirect(request.META.get('HTTP_REFERER', '/'))
 
+class AnnouncementView(LoginRequiredMixin, View):
+    template_name = 'blog/announ.html'
+    form_class = AnnouncementForm
+    def get(self, request):
+        return render(request, self.template_name, {'form': self.form_class})
+
+    def post(self, request):
+        form=AnnouncementForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Announcement Successful')
+            return redirect('/announcements')
+
+        return redirect(request.META.get('HTTP_REFERER', '/'))
+
+class AllAnnouncementsView(LoginRequiredMixin ,View):
+    template_name='blog/announcements.html'
+    model = Announcement.objects.all().order_by('-date')
+
+    def get(self, request):
+        pt = get_latest(BlogPost.objects.all().order_by('-date'))
+        at = get_latest(Announcement.objects.all().order_by('-date'))
+
+        return render(request, self.template_name, context={'a': self.model, 'pt': pt, 'at': at})
+
+class SingleAnnouncementView(LoginRequiredMixin, View):
+    model = Announcement
+    template_name = 'blog/announcement.html'
+    def get(self,request, pk):
+        return render(request, self.template_name, context={'a': self.model.objects.get(id=pk)})
+
+class SuperUserView(LoginRequiredMixin, View):
+    template_name = 'superview.html'
+
+    def get(self, request):
+        users = User.objects.all().order_by('-date_joined')
+        return render(request, self.template_name, context = {'users': users})
+
+@login_required
+def delete_user(request, pk):
+    if request.user.is_superuser:
+        user = User.objects.get(id=pk)
+        user.delete()
+        messages.warning(request, f'Deleted {user.username}.')
+        return redirect('superuserview')
+    else:
+        return HttpResponseForbidden('Are you even supposed to be here?')
 
 class CategoryView(View):
     template_name = 'blog/category_posts.html'

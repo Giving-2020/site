@@ -1,10 +1,12 @@
 {% extends "blog/base_sidebar.html" %}
 
 {% block body %}
+{% if page_obj %}
+<h2>Latest Posts</h2><hr>
+{% else %}
+<h1 style="font-weight: lighter;">Nothing Yet ...</h1>
+{% endif %}
 
-<h2>Latest Posts</h2>
-
-<hr>
 
 {% include 'blog/feed.html' %}
 
