@@ -31,3 +31,9 @@ class AnnouncementForm(forms.ModelForm):
             'content': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Content'}),
             'author': forms.TextInput(attrs={'id': 'auth', 'type': 'hidden'})
         }
+        
+        
+        
+        
+        
+        
