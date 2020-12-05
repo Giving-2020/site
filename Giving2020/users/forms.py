@@ -19,7 +19,7 @@ class LoginForm(forms.Form):
 class RegisterForm(forms.Form):
     email = forms.EmailField(label='Email', max_length=32, widget=forms.TextInput(
         attrs={
-            'placeholder': 'example@f1recloud.com'
+            'placeholder': 'example@giving2020.com'
         }
     ))
     username = forms.CharField(label='Username', max_length=32, widget=forms.TextInput(
