@@ -3,7 +3,7 @@
 {% block body %}
 {% if user.is_superuser %}
 {% for user in users %}
-<div class="card" style="padding: 15px;border-radius: 25px;">
+<div class="card" style="padding: 15px;border-radius: 25px;background-color: transparent;border-color: grey">
     <img src="{{ user.profile.profile_picture.url }}" style="max-width: 40px; max-height: 40px; min-height: 40px; min-width: 40px;" class="rounded-circle">
     <div>
     <h4>{{ user.username }}</h4>

@@ -15,7 +15,9 @@ from blog.views import (
     SingleAnnouncementView,
     AllAnnouncementsView,
     SuperUserView,
-    delete_user
+    delete_user,
+    delete_announcement,
+    EditAnnouncementView
 )
 
 
@@ -35,5 +37,7 @@ urlpatterns = [
     path('announcements/<int:pk>', SingleAnnouncementView.as_view(), name='announcements_single'),
     path('announcements/', AllAnnouncementsView.as_view(), name='announcements'),
     path(f'superuser/{key}', SuperUserView.as_view(), name='superuserview'),
-    path(f'user/delete/{key}/<int:pk>', delete_user, name='delete_user')
+    path(f'user/delete/{key}/<int:pk>', delete_user, name='delete_user'),
+    path('announcement/delete/<int:pk>', delete_announcement, name='delete_ann'),
+    path('announcement/edit/<int:pk>', EditAnnouncementView.as_view(), name='edit_ann'),
 ]

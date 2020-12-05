@@ -28,7 +28,7 @@ class AnnouncementForm(forms.ModelForm):
         fields = ('title', 'content', 'author')
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Title...'}),
-            'content': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Content'}),
+            'content': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Content...'}),
             'author': forms.TextInput(attrs={'id': 'auth', 'type': 'hidden'})
         }
         
