@@ -80,16 +80,8 @@ WSGI_APPLICATION = 'Giving2020.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 if credentials['use_postgres']:
-    DATABASES = {
-        'default': {
-            'ENGINE': credentials['engine'],
-            'NAME': credentials['db_name'],
-            'USER': credentials['db_user'],
-            'PASSWORD': credentials['db_password'],
-            'HOST':  credentials['db_host'],
-            'PORT': credentials['db_port'],
-        }
-    }
+    DATABASES = credentials['database']
+    
 else:
     DATABASES = {
     'default': {
