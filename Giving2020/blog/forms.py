@@ -1,20 +1,13 @@
 from django import forms
 
-from blog.models import BlogPost, Comment, Announcement, Category
+from blog.models import BlogPost, Comment, Announcement
 
-choice = Category.objects.all().values_list('name', 'name')
-choice_list = []
-for item in choice:
-    choice_list.append(item)
 
 class BlogPostForm(forms.ModelForm):
+
     class Meta:
         model = BlogPost
-        fields = ['title', 'category', 'content']
-
-        widgets = {
-            'category': forms.Select(choices=choice_list, attrs={'class': 'form-control'})
-        }
+        fields = ['title', 'content']
 
 
 class CommentForm(forms.ModelForm):
