@@ -10,7 +10,12 @@
     <link rel="stylesheet" href="{% static 'blog/base.css' %}">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-
+    <style type="text/css">
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap');
+        body {
+            font-family: 'Montserrat', sans-serif;
+        }
+    </style>
     {% block head %}
     {% endblock %}
 </head>
@@ -45,6 +50,9 @@
                         <li class="nav-item">
                             <a href='{% url "superuserview" %}' class="nav-link btn btn-outline-info">View Users</a>
                         </li>
+                        <li class="nav-item">
+                            <button class="btn btn-outline-secondary" onclick="dark()">Toggle Dark Mode</button>
+                        </li>
 
                     {% endif %}
                     <li class="nav-item">
@@ -53,6 +61,7 @@
                     <li class="nav-item">
                         <a href="{% url 'logout' %}" class="nav-link">Logout</a>
                     </li>
+
                 {% endif %}
             </ul>
         </div>
@@ -85,14 +94,15 @@
 
 
                     <ul class="list-group" style="border-radius: 25px;">
-                        <li class="list-group-item list-group-item-light">
+                        <li class="list-group-item list-group-item-light" style="background-color: transparent; border-color: grey;">
                             <a href="{% url 'index' %}"><i class="fa fa-clock-o"></i> Latest Posts {% if not pt == 0 %}<span class="badge badge-success">{{ pt }} Today</span>{% endif %}</a>
                         </li>
-                        <li class="list-group-item list-group-item-light">
+                        <li class="list-group-item list-group-item-light"  style="background-color: transparent; border-color: grey;">
                             <a href="{% url 'hot_posts' %}"><i class="fa fa-fire"></i> Hot Posts</a>
                         </li>
-                        <li class="list-group-item list-group-item-light">
+                        <li class="list-group-item list-group-item-light" style="background-color: transparent; border-color: grey;">
                         <a href='{% url "announcements" %}'><i class="fa fa-bullhorn"></i> Announcements {% if not at == 0 %}<span class="badge badge-success">{{ at }} Today</span>{% endif %}</a>
+
 
                     </li>
                     </ul>
@@ -104,5 +114,16 @@
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+        function dark() {
+            var element = document.body;
+            element.classList.toggle("dark");
+            var sidebar = document.main
+            sidebar.classList.toggle("trans");
+            var sidebar_list = document.li
+            sidebar_list.classList.toggle("trans")
+        }
+    </script>
 </body>
+
 </html>

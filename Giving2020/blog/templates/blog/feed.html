@@ -36,7 +36,7 @@
 
         <h2><a class="article-title" href="{% url 'blog_post' post.id %}">{{ post.title }}</a></h2>
         <div class="blogcontent">
-        {{ post.content |slice:":150" | safe }} <a href='{% url "blog_post" post.id %}'>Read More...</a>
+        {{ post.content |slice:":150"| markdown | safe }} <a href='{% url "blog_post" post.id %}'>Read More...</a>
         </div>
         </div>
     </article>

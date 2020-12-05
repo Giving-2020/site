@@ -5,6 +5,7 @@ from django.db.models import Count
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
+from django.views.generic import UpdateView
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
 from django.contrib.auth.models import User
@@ -209,7 +210,10 @@ class AnnouncementView(LoginRequiredMixin, View):
     template_name = 'blog/announ.html'
     form_class = AnnouncementForm
     def get(self, request):
-        return render(request, self.template_name, {'form': self.form_class})
+
+        pt = get_latest(BlogPost.objects.all())
+        at = get_latest(Announcement.objects.all().order_by('-date'))
+        return render(request, self.template_name, {'form': self.form_class, 'at': at, 'pt': pt})
 
     def post(self, request):
         form=AnnouncementForm(request.POST)
@@ -222,19 +226,22 @@ class AnnouncementView(LoginRequiredMixin, View):
 
 class AllAnnouncementsView(LoginRequiredMixin ,View):
     template_name='blog/announcements.html'
-    model = Announcement.objects.all().order_by('-date')
 
     def get(self, request):
+        model = Announcement.objects.all().order_by('-date')
         pt = get_latest(BlogPost.objects.all().order_by('-date'))
         at = get_latest(Announcement.objects.all().order_by('-date'))
 
-        return render(request, self.template_name, context={'a': self.model, 'pt': pt, 'at': at})
+        return render(request, self.template_name, context={'a': model, 'pt': pt, 'at': at})
 
 class SingleAnnouncementView(LoginRequiredMixin, View):
     model = Announcement
     template_name = 'blog/announcement.html'
     def get(self,request, pk):
-        return render(request, self.template_name, context={'a': self.model.objects.get(id=pk)})
+        pt = get_latest(BlogPost.objects.all())
+        at = get_latest(Announcement.objects.all().order_by('-date'))
+        return render(request, self.template_name, context={'a': self.model.objects.get(id=pk), 'at': at, 'pt': pt})
+
 
 class SuperUserView(LoginRequiredMixin, View):
     template_name = 'superview.html'
@@ -242,6 +249,31 @@ class SuperUserView(LoginRequiredMixin, View):
     def get(self, request):
         users = User.objects.all().order_by('-date_joined')
         return render(request, self.template_name, context = {'users': users})
+
+class EditAnnouncementView(LoginRequiredMixin, View):
+    template_name = 'blog/announ.html'
+
+    def get(self, request, pk):
+        ann = get_object_or_404(Announcement, id=pk)
+
+        if request.user != ann.author:
+            return HttpResponseForbidden('You are not authorized to edit this announcement.')
+
+        form = AnnouncementForm(instance=ann)
+        return render(request, self.template_name, {'form': form, 'ann': ann})
+
+    def post(self, request, pk):
+        ann = get_object_or_404(Announcement, id=pk)
+
+        if request.user != ann.author:
+            return HttpResponseForbidden('You are noe authorized to edit this announcement.')
+
+        form = AnnouncementForm(request.POST, instance=ann)
+        form.save()
+
+        messages.success(request, 'Announcement Updated successfully.')
+        return redirect('announcements_single', pk=pk)
+
 
 @login_required
 def delete_user(request, pk):
@@ -253,14 +285,11 @@ def delete_user(request, pk):
     else:
         return HttpResponseForbidden('Are you even supposed to be here?')
 
-class CategoryView(View):
-    template_name = 'blog/category_posts.html'
-
-    def get(self, request, cats):
-        posts = BlogPost.objects.filter(category=cats)
-        posts = prepare_posts(request, *posts)
-
-        paginator = Paginator(posts, 2)
-        page_obj = paginator.get_page(request.GET.get('page'))
-
-        return render(request, self.template_name, {'is_paginated': True, 'page_obj': page_obj, 'cats':cats})
+@login_required
+def delete_announcement(request, pk):
+    if request.method == 'POST':
+        ann = Announcement.objects.get(id=pk)
+        if request.user.is_staff and ann.author == request.user:
+            ann.delete()
+            messages.success(request, 'Announcement Deleted.')
+            return redirect('announcements')

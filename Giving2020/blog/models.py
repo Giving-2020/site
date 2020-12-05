@@ -1,16 +1,9 @@
 from django.db import models
 from markdownx.models import MarkdownxField
 from ckeditor.fields import RichTextField
-class Category(models.Model):
-    name = models.CharField(max_length=64)
-
-    def __str__(self):
-        return self.name
-
 class BlogPost(models.Model):
     title = models.CharField(max_length=64)
-    content = RichTextField(max_length=16384)
-    category = models.CharField(max_length=64, default="Uncategorized")
+    content = MarkdownxField()
 
     date = models.DateTimeField(auto_now_add=True)
     last_edited = models.DateTimeField(auto_now=True)
@@ -43,7 +36,7 @@ class Comment(models.Model):
 
 class Announcement(models.Model):
     title = models.CharField(max_length=1024)
-    content = RichTextField()
+    content = MarkdownxField()
     date = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey('auth.User', on_delete=models.CASCADE)
 

@@ -1,10 +1,20 @@
 {% extends 'blog/base_sidebar.html' %}
 
 {% block body %}
-<div class="card" style="padding: 30px;border-radius: 25px;">
+<div class="card" style="padding: 30px;border-radius: 25px;background-color: transparent;border-color: grey">
 	<h1 style="font-weight: lighter;">{{ a.title }}
-	
-	</h1><hr>
+
+	</h1>
+	{% if request.user.is_staff and request.user == a.author %}
+		<form method="POST" action='{% url "delete_ann" a.pk %}'>
+			{% csrf_token %}
+			<button class="btn btn-outline-danger btn-sm">Delete</button>
+					<a href='{% url "edit_ann" a.pk %}' class="btn btn-outline-info btn-sm">Edit</a>
+
+		</form>
+	{% endif %}
+	<hr>
+
 	<span class="text-muted">on {{ a.date }} by {{ a.author }}</span>
 	<br>
 	<p>
