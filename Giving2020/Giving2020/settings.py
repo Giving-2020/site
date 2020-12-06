@@ -11,36 +11,38 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+from json import loads
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+credentials = loads(open("Giving2020/credentials.json","r").read())
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '*%az4the2o8fy(qb_p+z!cyzqc-!tjy^9e0t*^kcciq29*s6go'
+SECRET_KEY = credentials['secret_key']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = credentials['debug']
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = credentials['allowed_hosts']
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    'blog.apps.BlogConfig',
-    'users.apps.UsersConfig',
-    'markdownx',
-    'crispy_forms',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'blog.apps.BlogConfig',
+    'users.apps.UsersConfig',
+    'markdownx',
+    'crispy_forms',
     'ckeditor'
 ]
 
@@ -77,24 +79,17 @@ WSGI_APPLICATION = 'Giving2020.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
-"""
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'neifndvu',
-        'USER': 'neifndvu',
-        'PASSWORD': 'PASSWORD',
-        'HOST': 'drona.db.elephantsql.com',
-        'PORT': '5432',
-    }
-}
-"""
-DATABASES = {
+if credentials['use_postgres']:
+    DATABASES = credentials['database']
+    
+else:
+    DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': f'{BASE_DIR}/db.sqlite3',
     }
 }
+
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
