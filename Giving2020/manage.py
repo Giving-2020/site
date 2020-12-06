@@ -5,6 +5,7 @@ import sys
 
 
 def main():
+    """Entry point for Django management script."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Giving2020.settings')
     try:
         from django.core.management import execute_from_command_line

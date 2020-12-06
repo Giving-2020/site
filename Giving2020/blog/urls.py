@@ -1,25 +1,24 @@
-from django.urls import path
-import random
 import secrets
+
 from blog.views import (
+    AllAnnouncementsView,
+    AnnouncementView,
     BlogPostView,
     CommentView,
     CreatePostView,
     DeletePostView,
     DownVoteView,
+    EditAnnouncementView,
     HotPostsView,
     IndexView,
+    SingleAnnouncementView,
+    SuperUserView,
     UpdatePostView,
     UpvoteView,
-    AnnouncementView,
-    SingleAnnouncementView,
-    AllAnnouncementsView,
-    SuperUserView,
-    delete_user,
     delete_announcement,
-    EditAnnouncementView
+    delete_user
 )
-
+from django.urls import path
 
 key = secrets.token_hex(78)
 

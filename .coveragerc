@@ -1,0 +1,15 @@
+[run]
+branch = true
+source =
+    Giving2020
+    Giving2020/blog
+    Giving2020/Giving2020
+    Giving2020/users
+omit =
+    */migrations/*
+    */admin.py
+    */apps.py
+    */urls.py
+
+[report]
+fail_under = 100

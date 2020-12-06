@@ -1,4 +1,8 @@
-def prepare_posts(request, *posts):
+from django.core.handlers.wsgi import WSGIRequest
+
+
+def prepare_posts(request: WSGIRequest, *posts):
+    """Prepare post for Index, Hot and Blog Post View."""
     for post in posts:
         post.updated = False
         post.downvoted = False
