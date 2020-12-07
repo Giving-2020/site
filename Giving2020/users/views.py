@@ -1,20 +1,23 @@
+from blog.models import BlogPost
+from blog.utils import prepare_posts
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.handlers.wsgi import WSGIRequest
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
-
-from blog.models import BlogPost
-from blog.utils import prepare_posts
 from users.forms import LoginForm, RegisterForm, UpdateProfileForm, UpdateUserForm
 from users.models import User
 
 
 class ProfileView(View):
+    """User Profile View."""
+
     template_name = 'users/profile.html'
 
-    def get(self, request, user_id=None):
+    def get(self, request: WSGIRequest, user_id=None):
+        """Called upon a GET request."""
         if user_id is None and request.user.is_authenticated:
             return redirect('profile', user_id=request.user.id)
 
@@ -36,9 +39,12 @@ class ProfileView(View):
 
 
 class LoginView(View):
+    """Login View."""
+
     template_name = 'users/login.html'
 
-    def get(self, request):
+    def get(self, request: WSGIRequest):
+        """Called upon a GET request."""
         if request.user.is_authenticated:
             return redirect('/')
 
@@ -46,7 +52,8 @@ class LoginView(View):
         request.session['next'] = request.GET.get('next')
         return render(request, self.template_name, {'form': form})
 
-    def post(self, request):
+    def post(self, request: WSGIRequest):
+        """Called upon a POST request."""
         if request.user.is_authenticated:
             return redirect('/')
 
@@ -77,16 +84,20 @@ class LoginView(View):
 
 
 class UpdateProfileView(LoginRequiredMixin, View):
+    """User Update Profile View."""
+
     template_name = 'users/update_profile.html'
 
-    def get(self, request):
+    def get(self, request: WSGIRequest):
+        """Called upon a GET request."""
         context = {
             'user_form': UpdateUserForm(instance=request.user),
             'profile_form': UpdateProfileForm(instance=request.user.profile)
         }
         return render(request, self.template_name, context)
 
-    def post(self, request):
+    def post(self, request: WSGIRequest):
+        """Called upon a POST request."""
         user_form = UpdateUserForm(
             request.POST,
             instance=request.user
@@ -109,16 +120,20 @@ class UpdateProfileView(LoginRequiredMixin, View):
 
 
 class RegisterView(View):
+    """Account Register View."""
+
     template_name = 'users/register.html'
 
-    def get(self, request):
+    def get(self, request: WSGIRequest):
+        """Called upon a GET request."""
         if request.user.is_authenticated:
             return redirect('/')
 
         form = RegisterForm()
         return render(request, self.template_name, {'form': form})
 
-    def post(self, request):
+    def post(self, request: WSGIRequest):
+        """Called upon a POST request."""
         if request.user.is_authenticated:
             return redirect('/')
 

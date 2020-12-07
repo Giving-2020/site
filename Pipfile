@@ -6,12 +6,34 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-django = "*"
+django = "~=3.0.4"
 django-markdownx = "*"
 django-crispy-forms = "*"
 psycopg2 = "*"
 mistune = "*"
-pygments = "*"
+pygments = "~=2.3.1"
+coverage = "~=5.0"
+flake8 = "~=3.7"
+flake8-annotations = "~=2.0"
+flake8-bandit = "~=2.1"
+flake8-bugbear = "~=20.1"
+flake8-docstrings = "~=1.5"
+flake8-import-order = "~=0.18"
+flake8-string-format = "~=0.3"
+flake8-tidy-imports = "~=4.0"
+flake8-todo = "~=0.7"
+pep8-naming = "~=0.9"
+pre-commit = "~=2.1"
+coveralls = "~=2.1"
 
 [requires]
 python_version = "3.8"
+
+[scripts]
+start = "cd Giving2020/ ; python manage.py runserver"
+makemigrations = "cd Giving2020/ ; python manage.py makemigrations"
+django_shell = "cd Giving2020/ ; python manage.py shell"
+test = "cd Giving2020/ ; coverage run manage.py test"
+report = "coverage report -m"
+lint = "pre-commit run --all-files"
+precommit = "pre-commit install"

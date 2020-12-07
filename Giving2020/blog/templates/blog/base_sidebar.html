@@ -40,18 +40,15 @@
                 {% else %}
                     {% if "Blog Writers" in user.groups.all or user.is_staff %}
                         <li class="nav-item">
-                            <a href="{% url 'create_post' %}" class="nav-link btn btn-outline-info">New Post</a>
+                            <a href="{% url 'create_post' %}" class="nav-link">New Post</a>
                         </li>
                         <li class="nav-item">
-                            <a href="{% url 'announcement' %}" class="nav-link btn btn-outline-info">New Announcement</a>
+                            <a href="{% url 'announcement' %}" class="nav-link">New Announcement</a>
                         </li>
                     {% endif %}
                     {% if user.is_superuser %}
                         <li class="nav-item">
-                            <a href='{% url "superuserview" %}' class="nav-link btn btn-outline-info">View Users</a>
-                        </li>
-                        <li class="nav-item">
-                            <button class="btn btn-outline-secondary" onclick="dark()">Toggle Dark Mode</button>
+                            <a href='{% url "superuserview" %}' class="nav-link">View Users</a>
                         </li>
 
                     {% endif %}

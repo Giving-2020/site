@@ -1,5 +1,4 @@
 from django.contrib import admin
-
 from users.models import Profile
 
 admin.site.site_header = "Giving 2020 | Administration"

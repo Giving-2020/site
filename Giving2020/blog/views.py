@@ -1,18 +1,19 @@
+import datetime
+
+from blog.forms import AnnouncementForm, BlogPostForm, CommentForm
+from blog.models import Announcement, BlogPost, DownVote, Upvote
+from blog.utils import prepare_posts
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.db.models import Count
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views import View
-from django.views.generic import UpdateView
-from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
-from django.contrib.auth.models import User
-import datetime
-from blog.forms import BlogPostForm, CommentForm, AnnouncementForm
-from blog.models import BlogPost, DownVote, Upvote, Announcement
-from blog.utils import prepare_posts
+from django.views import View
+
 
 def get_latest(obj):
     posted_today = 0
@@ -23,9 +24,12 @@ def get_latest(obj):
 
 
 class IndexView(View):
+    """Home Page View."""
+
     template_name = 'blog/index.html'
 
     def get(self, request):
+        """Called upon a GET request."""
         posts = BlogPost.objects.order_by('-date')
         posts = prepare_posts(request, *posts)
         pt = get_latest(posts)
@@ -33,13 +37,17 @@ class IndexView(View):
         paginator = Paginator(posts, 2)
         page_obj = paginator.get_page(request.GET.get('page'))
 
-        return render(request, self.template_name, {'is_paginated': True, 'page_obj': page_obj, 'pt': pt, 'at': at})
+        return render(request, self.template_name,
+                      {'is_paginated': True, 'page_obj': page_obj, 'pt': pt, 'at': at})
 
 
 class HotPostsView(View):
+    """Hot Posts View."""
+
     template_name = 'blog/hot_posts.html'
 
     def get(self, request):
+        """Called upon a GET request."""
         posts = BlogPost.objects.annotate(num_upvotes=Count('upvote')).order_by('-num_upvotes')
         posts = prepare_posts(request, *posts)
 
@@ -47,7 +55,8 @@ class HotPostsView(View):
         page_obj = paginator.get_page(request.GET.get('page'))
         pt = get_latest(BlogPost.objects.all().order_by('-date'))
         at = get_latest(Announcement.objects.all().order_by('-date'))
-        return render(request, self.template_name, {'is_paginated': True, 'page_obj': page_obj, 'pt': pt, 'at': at})
+        return render(request, self.template_name,
+                      {'is_paginated': True, 'page_obj': page_obj, 'pt': pt, 'at': at})
 
 
 user_member_required = user_passes_test(
@@ -58,13 +67,17 @@ decorators = [login_required, user_member_required]
 
 @method_decorator(decorators, name='dispatch')
 class CreatePostView(LoginRequiredMixin, View):
+    """Create New Post View."""
+
     template_name = 'blog/new_post.html'
 
     def get(self, request):
+        """Called upon a GET request."""
         form = BlogPostForm()
         return render(request, self.template_name, {'form': form})
 
     def post(self, request):
+        """Called upon a POST request."""
         form = BlogPostForm(request.POST)
 
         if not form.is_valid():
@@ -79,9 +92,12 @@ class CreatePostView(LoginRequiredMixin, View):
 
 
 class BlogPostView(View):
+    """View Blog Post View."""
+
     template_name = 'blog/blog_post.html'
 
     def get(self, request, post_id):
+        """Called upon a GET request."""
         blog_post = get_object_or_404(BlogPost, id=post_id)
         blog_post = prepare_posts(request, blog_post)[0]
 
@@ -98,12 +114,15 @@ class BlogPostView(View):
 
 
 class CommentView(LoginRequiredMixin, View):
+    """Add New Coment View."""
 
     def get(self, request, post_id):
+        """Called upon a GET request."""
         blog_post = get_object_or_404(BlogPost, id=post_id)
         return redirect('blog_post', post_id=post_id)
 
     def post(self, request, post_id):
+        """Called upon a POST request."""
         blog_post = get_object_or_404(BlogPost, id=post_id)
 
         form = CommentForm(request.POST)
@@ -118,9 +137,12 @@ class CommentView(LoginRequiredMixin, View):
 
 
 class UpdatePostView(LoginRequiredMixin, View):
+    """Update Blog Post View."""
+
     template_name = 'blog/update_post.html'
 
     def get(self, request, post_id):
+        """Called upon a GET request."""
         blog_post = get_object_or_404(BlogPost, id=post_id)
 
         if request.user != blog_post.user:
@@ -130,6 +152,7 @@ class UpdatePostView(LoginRequiredMixin, View):
         return render(request, self.template_name, {'form': form, 'blog_post': blog_post})
 
     def post(self, request, post_id):
+        """Called upon a POST request."""
         blog_post = get_object_or_404(BlogPost, id=post_id)
 
         if request.user != blog_post.user:
@@ -143,9 +166,12 @@ class UpdatePostView(LoginRequiredMixin, View):
 
 
 class DeletePostView(LoginRequiredMixin, View):
+    """Delete Blog Post View."""
+
     template_name = 'blog/delete_post.html'
 
     def get(self, request, post_id):
+        """Called upon a GET request."""
         blog_post = get_object_or_404(BlogPost, id=post_id)
 
         if request.user != blog_post.user:
@@ -154,6 +180,7 @@ class DeletePostView(LoginRequiredMixin, View):
         return render(request, self.template_name, {'blog_post': blog_post})
 
     def post(self, request, post_id):
+        """Called upon a POST request."""
         blog_post = get_object_or_404(BlogPost, id=post_id)
 
         if request.user != blog_post.user:
@@ -164,11 +191,14 @@ class DeletePostView(LoginRequiredMixin, View):
 
 
 class UpvoteView(LoginRequiredMixin, View):
+    """User Upvote Blog View."""
 
     def get(self, request, post_id):
+        """Called upon a GET request."""
         return redirect(request.META.get('HTTP_REFERER', '/'))
 
     def post(self, request, post_id):
+        """Called upon a POST request."""
         blog_post = get_object_or_404(BlogPost, id=post_id)
 
         if any(post.user == request.user for post in blog_post.upvote_set.all()):
@@ -186,11 +216,14 @@ class UpvoteView(LoginRequiredMixin, View):
 
 
 class DownVoteView(LoginRequiredMixin, View):
+    """User Downvote Blog View."""
 
     def get(self, request, post_id):
+        """Called upon a GET request."""
         return redirect(request.META.get('HTTP_REFERER', '/'))
 
     def post(self, request, post_id):
+        """Called upon a POST request."""
         blog_post = get_object_or_404(BlogPost, id=post_id)
 
         if any(post.user == request.user for post in blog_post.downvote_set.all()):
@@ -206,17 +239,22 @@ class DownVoteView(LoginRequiredMixin, View):
 
         return redirect(request.META.get('HTTP_REFERER', '/'))
 
+
 class AnnouncementView(LoginRequiredMixin, View):
+    """New Announcement View."""
+
     template_name = 'blog/announ.html'
     form_class = AnnouncementForm
-    def get(self, request):
 
+    def get(self, request):
+        """Called upon a GET request."""
         pt = get_latest(BlogPost.objects.all())
         at = get_latest(Announcement.objects.all().order_by('-date'))
         return render(request, self.template_name, {'form': self.form_class, 'at': at, 'pt': pt})
 
     def post(self, request):
-        form=AnnouncementForm(request.POST)
+        """Called upon a POST request."""
+        form = AnnouncementForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, 'Announcement Successful')
@@ -224,36 +262,53 @@ class AnnouncementView(LoginRequiredMixin, View):
 
         return redirect(request.META.get('HTTP_REFERER', '/'))
 
-class AllAnnouncementsView(LoginRequiredMixin ,View):
-    template_name='blog/announcements.html'
+
+class AllAnnouncementsView(LoginRequiredMixin, View):
+    """All Announcements View."""
+
+    template_name = 'blog/announcements.html'
 
     def get(self, request):
+        """Called upon a GET request."""
         model = Announcement.objects.all().order_by('-date')
         pt = get_latest(BlogPost.objects.all().order_by('-date'))
         at = get_latest(Announcement.objects.all().order_by('-date'))
 
         return render(request, self.template_name, context={'a': model, 'pt': pt, 'at': at})
 
+
 class SingleAnnouncementView(LoginRequiredMixin, View):
+    """Single Announcement View."""
+
     model = Announcement
     template_name = 'blog/announcement.html'
-    def get(self,request, pk):
+
+    def get(self, request, pk):
+        """Called upon a GET request."""
         pt = get_latest(BlogPost.objects.all())
         at = get_latest(Announcement.objects.all().order_by('-date'))
-        return render(request, self.template_name, context={'a': self.model.objects.get(id=pk), 'at': at, 'pt': pt})
+        return render(request, self.template_name,
+                      context={'a': self.model.objects.get(id=pk), 'at': at, 'pt': pt})
 
 
 class SuperUserView(LoginRequiredMixin, View):
+    """Staff SuperUser View."""
+
     template_name = 'superview.html'
 
     def get(self, request):
+        """Called upon a GET request."""
         users = User.objects.all().order_by('-date_joined')
-        return render(request, self.template_name, context = {'users': users})
+        return render(request, self.template_name, context={'users': users})
+
 
 class EditAnnouncementView(LoginRequiredMixin, View):
+    """Edit Announcement View."""
+
     template_name = 'blog/announ.html'
 
     def get(self, request, pk):
+        """Called upon a GET request."""
         ann = get_object_or_404(Announcement, id=pk)
 
         if request.user != ann.author:
@@ -263,6 +318,7 @@ class EditAnnouncementView(LoginRequiredMixin, View):
         return render(request, self.template_name, {'form': form, 'ann': ann})
 
     def post(self, request, pk):
+        """Called upon a POST request."""
         ann = get_object_or_404(Announcement, id=pk)
 
         if request.user != ann.author:
@@ -284,6 +340,7 @@ def delete_user(request, pk):
         return redirect('superuserview')
     else:
         return HttpResponseForbidden('Are you even supposed to be here?')
+
 
 @login_required
 def delete_announcement(request, pk):

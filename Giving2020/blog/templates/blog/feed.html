@@ -56,7 +56,7 @@
             <a href="?page={{ num }}" class="btn btn-outline-info btn-sm mb-4">{{ num }}</a>
         {% endif %}
     {% endfor %}
-    
+
     {% if page_obj.has_next %}
         <a href="?page={{ page_obj.next_page_number }}" class="btn btn-outline-info mb-4">Next</a>
         <a href="?page={{ page_obj.paginator.num_pages }}" class="btn btn-outline-info mb-4">Last</a>
