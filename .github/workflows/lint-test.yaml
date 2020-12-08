@@ -93,7 +93,7 @@ jobs:
 
       # This step will publish the coverage reports coveralls.io and
       # print a "job" link in the output of the GitHub Action
-      - name: Publish coverage report to coveralls.io
-        env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: coveralls
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
