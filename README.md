@@ -1,4 +1,5 @@
 # Giving 2020 New - Giving is the greatest act of grace
+[![codecov](https://codecov.io/gh/Giving-2020/site/branch/master/graph/badge.svg?token=S24V1ZJ68H)](https://codecov.io/gh/Giving-2020/site)
 ## Website: https://giving2020.netlify.app/
 
 We welcome you to our website with immense respect. You can check out the blogs about the various uses of the three R's, economy, disasters, plastics and how they impact our lives in innumerable different manners. These blogs are written by our fellow teammates and we hope you find them motivating and enthralling.
