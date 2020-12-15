@@ -16,11 +16,7 @@ from django.views import View
 
 
 def get_latest(obj):
-    posted_today = 0
-    for a in obj:
-        if a.date.date() == datetime.datetime.now().date():
-            posted_today += 1
-    return posted_today
+    return sum(1 for a in obj if a.date.date() == datetime.datetime.now().date())
 
 
 class IndexView(View):
